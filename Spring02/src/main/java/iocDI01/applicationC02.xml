@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!-- 클래스 경로는 패키지가 포함 된 경로를 지정 해야 함
+		 기본적으로 등록된 모든 bean을 생성함 
+		=> lazy-init="default" : 무조건 생성
+		=> lazy-init="true" : 
+				메모리 낭비 막기 위해 컨테이너 구동 시점이 아닌
+				해당빈<bean> 이 사용하는 시점에 생성 
+	 -->
+<!-- scope="prototype" / "singleton" : 기본이 싱글톤  -->
+	
+	<bean id="mytv" class="iocDI01.SsTV" lazy-init="true"  scope="singleton"/>
+	<bean id="mytv1" class="iocDI01.LgTV" lazy-init="true" scope="prototype"/>
+
+</beans>

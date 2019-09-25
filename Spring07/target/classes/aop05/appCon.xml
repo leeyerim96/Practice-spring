@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+
+	<bean id="cookerb" class="aop05.Boy" lazy-init="true"/>
+	<bean id="cookerg" class="aop05.Girl" lazy-init="true"/>
+	<bean id="myAsp" class="aop05.MyAspect" lazy-init="true"/>
+
+	<aop:config>
+		<aop:aspect ref="myAsp">
+			<aop:pointcut expression="execution(* doSomething(*))" id="mypoint"/>
+			<aop:before method="myBefofre" pointcut-ref="mypoint"/>
+			<aop:after-returning method="myAfter_returning" pointcut-ref="mypoint" returning="result"/>
+			<aop:after-throwing method="myAfter_throwing" pointcut-ref="mypoint" throwing="e"/>
+			<aop:after method="myAfter" pointcut-ref="mypoint"/>
+		</aop:aspect>
+	</aop:config>
+
+</beans>

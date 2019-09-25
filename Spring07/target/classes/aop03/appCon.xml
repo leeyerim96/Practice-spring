@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+		
+		<bean id="cookerb" class="aop03.Boy" lazy-init="true"/>
+		<bean id="cooker" class="aop03.Girl" lazy-init="true"/>  
+		
+		<bean id ="myAsp" class="aop03.Myaspect" lazy-init="true" />
+	<!-- Aop 설정
+		1) 공통기능 으로 사용할 bean 을 지정
+		2) 핵심적 관심사항을 등록
+		** Joinpoint : 클라이언트가 호출하는 모든 비즈니스 메서드
+		** pointcut : Joinpoint 등 실제 적용할 메서드 : 핵심사항 중
+		횡적 관심사를 적용할 타겟 메서드를 선택하는 지시자, 즉 advice를 받을 메서드 <
+		ex , 입력, 수정, 삭제 ... 해서 타겟 메서드를 선택
+		3) advice type 지정 : aop02.MyAspect에 정의된 횡적 관심사항 메서드
+	 -->
+		
+		<aop:config>
+			<aop:aspect ref="myAsp">
+				<aop:pointcut expression="execution(void doSomething())" id="mypoint"/>
+				<aop:around method="myAround" pointcut-ref="mypoint"/>
+			</aop:aspect>
+		</aop:config>	
+</beans>

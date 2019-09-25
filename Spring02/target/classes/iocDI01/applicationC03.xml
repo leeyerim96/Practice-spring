@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!-- Test1 : 고전적 방법 -->
+	<bean id="tv" class="iocDI01.LgTVs" lazy-init="true"/>
+	
+<!-- Test2. SsTVs : 생성자를 통해 Speaker를 주입 받기 
+			=> 매개변수1개, 2개 모두 Test   
+		 	=> 인자의 종류 (type , 갯수) 에 따라 해당 생성자 호출됨 
+	     	=> index 속성을 적용하면 더욱 정확하게 매칭가능함    -->  	
+	<bean id="sp" class="iocDI01.Speaker" lazy-init="true"/>     	
+	<bean id="tvs" class="iocDI01.SsTVs" lazy-init="true"  scope="singleton">
+		<constructor-arg index="0" ref="sp"/>
+		<constructor-arg index="2" value="123456700"/>
+		<constructor-arg index="1" value="abc_0011"/>
+	</bean>
+	
+<!-- Test3. AiTVs : setter 메서드를 통해 Speaker를 주입 받기 
+					 => 매개변수1개, 2개 모두 Test   -->	 
+	<bean id="tva" class="iocDI01.AiTVs" lazy-init="true">
+		<property name="speaker" ref="sp" ></property>
+		<property name="price" value="777000"></property>
+					
+	<!-- <property name="speaker" 
+	             이값으로 setter메서드명 setSpeaker, setPrice 를 찾기때문에
+			  setter 메서드명과 변수명을 일치시키는것이 좋음  -->				
+	</bean>	
+	
+</beans>

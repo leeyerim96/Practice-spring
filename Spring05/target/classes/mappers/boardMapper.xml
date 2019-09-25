@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="green.mapper.BoardMapper">
+<!-- 자바클래스에서 maper 를 찾는 경로
+	다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+
+<!-- SQL 쿼리 등록하는 xml 부분에서 비교연산자 사용할때 
+XML에서는  <,>등 비교연산자의 경우 XML규칙상 에러 나기때문에
+SQL문을 CDATA로 묶어 주어야 한다.
+<![CDATA[ SELECT * FROM table WHERE id > 1 ]]> -->
+
+<!-- <![CDATA[ select seq,title,wid,content,
+  to_char(regdate, 'yyyy/mm/dd/ hh24:mi:ss') regdate,cnt,root,step,indent 
+  from (select b.* , ROW_NUMBER() OVER(order by root desc, step asc) rnum from board b ) 
+  where rnum >= #{sno} and rnum <= #{eno} ]]> -->
+
+
+<select id="idselectList" resultType="vo.BoardVO" >
+	select seq,title,id,to_char(regdate,'yyyy/mm/dd/ hh24:mi:ss') regdate,
+	 cnt, root, step, indent from board where id=#{id} order by root desc , step asc 
+</select>
+
+
+<select id="totalrowCount" resultType="integer">
+	select count(*) from board
+</select>
+
+<select id="pageList" resultType="vo.BoardVO">
+	select seq,title,id, 
+	  to_char(regdate,'yyyy/mm/dd/ hh24:mi:ss') regdate,cnt,root, step, indent from 
+	  (select b.* , ROW_NUMBER() OVER(order by root desc, step asc) rnum from board b) 
+	  where rnum between #{sno} and #{eno}
+</select>
+
+<select id="selectList" resultType="vo.BoardVO" >
+	select seq,title,id,to_char(regdate,'yyyy/mm/dd/ hh24:mi:ss') regdate,
+	 cnt, root, step, indent from board order by root desc , step asc
+</select>
+
+<select id="selectDetail" resultType="vo.BoardVO">
+	select seq,title,id,content, to_char(regdate,'yyyy/mm/dd/ hh24:mi:ss') regdate,
+	 cnt, root, step, indent from board where seq=#{seq}
+</select>
+<insert id="insertBoard">
+	insert into board values 
+	 ((select nvl(max(seq), 0)+1 from board),#{title},#{id},#{content},
+	 sysdate,0,(select nvl(max(seq), 0)+1 from board),0,0)
+</insert>
+<update id="updateBoard">
+	update board set title=#{title}, content=#{content} where seq=#{seq}
+</update>
+<delete id="deleteBoard">
+	delete board  
+	<if test="seq!=root">where seq=#{seq} </if>
+	<if test="seq==root">where root=#{root}</if>
+</delete>
+
+<update id="stepUpdate">
+	update board set step=step+1 where root=#{root} and step>=#{step}
+</update>
+
+<insert id="rinsertBoard">
+	insert into board values
+	  ((select nvl(max(seq),0)+1 from board),#{title},#{id},#{content},
+	  sysdate,0,#{root},#{step},#{indent})
+</insert>
+
+<update id="countUp">
+	update board set cnt=cnt+1 where seq=#{seq}
+</update>
+
+<!-- #{id}
+ => getID() or setID("..") 
+ => 해당되는 값
+ => Map 타입의 경우 키값이 id 인 값을 찾음  -->
+  
+  <!-- 
+  <select id="getTime" resultType="string">
+  select now()
+  </select>
+  
+  <select id="readWithPW" 
+         resultType="org.zerock.domain.MemberVO">
+  select *  from  tbl_member where  userid = #{userid} and userpw = #{userpw}
+  </select>
+   -->
+
+
+</mapper>
